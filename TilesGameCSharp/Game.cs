@@ -45,7 +45,10 @@ namespace TilesGameCSharp
                 m_Levels[level].SelectColor(input);
                 if (GameFinished())
                 {
-                    GC.Write($"\nYou finished the game in {totalNumberOfMoves + numberOfMoves} moves!");
+                    m_Levels[level].Paint();
+                    GC.SetColors(System.ConsoleColor.Green, System.ConsoleColor.Black);
+                    GC.Write($"\nCongrats!\nYou finished the game in {totalNumberOfMoves + numberOfMoves} moves!");
+                    GC.ResetColors();
                     return;
                 }
                 if (m_Levels[level].Finished())
@@ -57,13 +60,6 @@ namespace TilesGameCSharp
                     level += 1;
                     totalNumberOfMoves += numberOfMoves;
                     numberOfMoves = 0;
-                    if (level >= m_Levels.Length)
-                    {
-                        GC.SetColors(System.ConsoleColor.Red, System.ConsoleColor.Black);
-                        GC.Write("\nGame Over - No more levels!");
-                        GC.ResetColors();
-                        return;
-                    }
                     GC.Write("\nPress any key to advance to the next level!");
                     GC.ReadKey();
                 }
