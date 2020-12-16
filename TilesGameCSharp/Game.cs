@@ -1,19 +1,25 @@
-﻿using GC = TilesGameCSharp.GameConsole;
+﻿using System.Collections.Generic;
+using G = TilesGameCSharp.GlobalConstants;
+using GC = TilesGameCSharp.GameConsole;
 
 namespace TilesGameCSharp
 {
     internal class Game
     {
-        private const int MAX_LEVELS = 10;
-        private readonly Level[] Levels = new Level[MAX_LEVELS];
-        private const int USER_GAVE_UP = -1;
-        private const int USER_WANTS_HELP = -2;
+        private readonly Level[] m_Levels = new Level[G.MAX_LEVELS];
+        private readonly Dictionary<string, int> m_Colors;
 
         public Game()
         {
-            for (int i = 0; i < MAX_LEVELS; i++)
+            m_Colors = SetupColors();
+            InitializeLevels();
+        }
+
+        private void InitializeLevels()
+        {
+            for (int i = 0; i < G.MAX_LEVELS; i++)
             {
-                Levels[i] = new Level(i + 1);
+                m_Levels[i] = new Level(i + 1);
             }
         }
 
@@ -23,35 +29,40 @@ namespace TilesGameCSharp
             int input, numberOfMoves = 0, totalNumberOfMoves = 0, level = 0;
             while (true)
             {
-                Levels[level].Paint();
+                m_Levels[level].Paint();
                 input = GetUserInput();
-                if (input == USER_GAVE_UP)
+                if (input == G.USER_GAVE_UP)
                 {
                     GC.Write($"\nYou gave up after {totalNumberOfMoves + numberOfMoves} moves - game ended!");
                     return;
                 }
-                if (input == USER_WANTS_HELP)
+                if (input == G.USER_WANTS_HELP || input == G.INVALID_INPUT)
                 {
-                    ShowIntro();
+                    ShowIntro(input);
                     continue;
                 }
                 numberOfMoves += 1;
-                Levels[level].SelectColor(input);
+                m_Levels[level].SelectColor(input);
                 if (GameFinished())
                 {
                     GC.Write($"\nYou finished the game in {totalNumberOfMoves + numberOfMoves} moves!");
                     return;
                 }
-                if (Levels[level].Finished())
+                if (m_Levels[level].Finished())
                 {
-                    Levels[level].Paint();
-                    GC.Write($"\nYou finished level {Levels[level].Number} in {numberOfMoves} moves!");
+                    m_Levels[level].Reset();
+                    m_Levels[level].Paint();
+                    GC.SetColors(System.ConsoleColor.Green, System.ConsoleColor.Black);
+                    GC.Write($"\nHurray!\nYou finished the level {m_Levels[level].Number} in {numberOfMoves} moves!\n");
+                    GC.ResetColors();
                     level += 1;
                     totalNumberOfMoves += numberOfMoves;
                     numberOfMoves = 0;
-                    if (level >= Levels.Length)
+                    if (level >= m_Levels.Length)
                     {
+                        GC.SetColors(System.ConsoleColor.Red, System.ConsoleColor.Black);
                         GC.Write("\nGame Over - No more levels!");
+                        GC.ResetColors();
                         return;
                     }
                     GC.Write("\nPress any key to advance to the next level!");
@@ -60,26 +71,39 @@ namespace TilesGameCSharp
             }
         }
 
-        private void ShowIntro()
+        private void ShowIntro(int invalidInput = 0)
         {
             GC.ResetColors();
             GC.Clear();
-            GC.Write("===[Tiles game]===\nRemember the numbers for each color!\n");
-            for (int c = 1; c < 15; c++)
+            GC.Write("===[Color tiles game]===\n\n");
+            if (invalidInput == G.INVALID_INPUT)
             {
-                GC.SetColors(System.ConsoleColor.Black, (System.ConsoleColor)c);
-                GC.Write(System.Enum.GetName(typeof(System.ConsoleColor), c).PadRight(20));
+                GC.SetColors(System.ConsoleColor.Red, System.ConsoleColor.Black);
+                GC.Write(@"Sorry I did not understand you last input!
+Please type a valid color name or number, see below for details.
+");
                 GC.ResetColors();
-                GC.Write("= " + c + "\n");
             }
-            GC.Write("\nWhen ready press any key when ready to play!\n");
+            else
+            {
+                GC.Write(@"Remember the name or number for each color!
+");
+            }
+            foreach (KeyValuePair<string, int> color in m_Colors)
+            {
+                GC.Write($"\n{color.Value,2}. {color.Key,-12}");
+                GC.SetColors(System.ConsoleColor.Black, (System.ConsoleColor)color.Value);
+                GC.Write($"{color.Key,-12}");
+                GC.ResetColors();
+            }
+            GC.Write("\n\nWhen ready press any key when ready to play!\n");
             GC.ReadKey();
             GC.Clear();
         }
 
         private bool GameFinished()
         {
-            foreach (Level level in Levels)
+            foreach (Level level in m_Levels)
             {
                 if (!level.Finished())
                 {
@@ -92,22 +116,40 @@ namespace TilesGameCSharp
 
         private int GetUserInput()
         {
-            string input = GC.ReadLine();
-            int maxNum = 14;
             GC.Write(@$"
-Please enter color number (1-{maxNum}) that is displayed in map above then press [ENTER]
-Press H and [ENTER] for help with color numbers.
-Press any other key and [ENTER] to quit.\n> ");
-            if (input.ToUpper() == "H")
+Please enter color number (1-{G.MAX_COLORS}) or color name that is displayed in level above then press [ENTER]
+Press H and [ENTER] for help with colors.
+Press Q and [ENTER] to quit.
+> ");
+            string input = GC.ReadLine().ToUpper();
+            if (m_Colors.ContainsKey(input))
             {
-                return USER_WANTS_HELP;
+                input = m_Colors[input].ToString();
             }
-            if (int.TryParse(input, out int num) && num > 0 && num < maxNum + 1)
+            if (input == "H")
+            {
+                return G.USER_WANTS_HELP;
+            }
+            if (input == "Q")
+            {
+                return G.USER_GAVE_UP;
+            }
+            if (int.TryParse(input, out int num) && num > 0 && num < G.MAX_COLORS + 1)
             {
                 return num;
             }
 
-            return USER_GAVE_UP;
+            return G.INVALID_INPUT;
+        }
+
+        private static Dictionary<string, int> SetupColors()
+        {
+            Dictionary<string, int> colors = new Dictionary<string, int>(G.MAX_COLORS);
+            for (int c = 1; c <= G.MAX_COLORS; c++)
+            {
+                colors.Add(System.Enum.GetName(typeof(System.ConsoleColor), c).ToUpper(), c);
+            }
+            return colors;
         }
     }
 }

@@ -15,7 +15,7 @@ namespace TilesGameCSharp
             int[] levelColors = new int[levelNumber + 1];
             for (int c = 0; c <= levelNumber; c++)
             {
-                levelColors[c] = rnd.Next(1, 15);
+                levelColors[c] = rnd.Next(1, GlobalConstants.MAX_COLORS + 1);
             }
 
             for (int y = 0; y < Map.GetUpperBound(0); y++)
@@ -23,6 +23,17 @@ namespace TilesGameCSharp
                 for (int x = 0; x < Map.GetUpperBound(1); x++)
                 {
                     Map[y, x] = new Tile() { Color = (ConsoleColor)levelColors[rnd.Next(0, levelNumber)] };
+                }
+            }
+        }
+
+        public void Reset()
+        {
+            for (int y = 0; y < Map.GetUpperBound(0); y++)
+            {
+                for (int x = 0; x < Map.GetUpperBound(1); x++)
+                {
+                    Map[y, x].Selected = false;
                 }
             }
         }
@@ -61,13 +72,13 @@ namespace TilesGameCSharp
         {
             GC.ResetColors();
             GC.Clear();
-            GC.Write($"===[Level #{Number}]===\n");
+            GC.Write($"===[Level #{Number}]===\n\n");
             for (int y = 0; y < Map.GetUpperBound(0); y++)
             {
                 for (int x = 0; x < Map.GetUpperBound(1); x++)
                 {
-                    GC.SetColors(Map[y, x].Color, (Map[y, x].Selected) ? ConsoleColor.Green : ConsoleColor.Black);
-                    GC.Write("* ");
+                    GC.SetColors((Map[y, x].Selected) ? ConsoleColor.Black : Map[y, x].Color, ConsoleColor.Black);
+                    GC.Write("██");
                     GC.ResetColors();
                 }
                 GC.Write("\r\n");
