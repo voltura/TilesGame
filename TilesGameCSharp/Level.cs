@@ -72,17 +72,22 @@ namespace TilesGameCSharp
         {
             GC.ResetColors();
             GC.Clear();
-            GC.Write($"===[Level #{Number}]===\n\n");
+            GC.Write($" Level {Number:00} ", true);
+            GC.Write("\n\n");
+            GC.Write($"┌{"".PadLeft(Map.GetUpperBound(1)*2 + 2, '─')}┐\n");
+
             for (int y = 0; y < Map.GetUpperBound(0); y++)
             {
+                GC.Write("│ ");
                 for (int x = 0; x < Map.GetUpperBound(1); x++)
                 {
-                    GC.SetColors((Map[y, x].Selected) ? ConsoleColor.Black : Map[y, x].Color, ConsoleColor.Black);
-                    GC.Write("██");
+                    GC.SetColors(Map[y, x].Color, ConsoleColor.Black);
+                    GC.Write((Map[y, x].Selected) ? "■■" : "██");
                     GC.ResetColors();
                 }
-                GC.Write("\r\n");
+                GC.Write(" │\r\n");
             }
+            GC.Write($"└{"".PadLeft(Map.GetUpperBound(1)*2 + 2, '─')}┘");
         }
     }
 }

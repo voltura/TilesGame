@@ -50,7 +50,6 @@ namespace TilesGameCSharp
                 }
                 if (m_Levels[level].Finished())
                 {
-                    m_Levels[level].Reset();
                     m_Levels[level].Paint();
                     GC.SetColors(System.ConsoleColor.Green, System.ConsoleColor.Black);
                     GC.Write($"\nHurray!\nYou finished the level {m_Levels[level].Number} in {numberOfMoves} moves!\n");
@@ -75,7 +74,8 @@ namespace TilesGameCSharp
         {
             GC.ResetColors();
             GC.Clear();
-            GC.Write("===[Color tiles game]===\n\n");
+            GC.Write(" Color tiles game ", true);
+            GC.Write("\n\n");
             if (invalidInput == G.INVALID_INPUT)
             {
                 GC.SetColors(System.ConsoleColor.Red, System.ConsoleColor.Black);
@@ -121,7 +121,7 @@ Please enter color number (1-{G.MAX_COLORS}) or color name that is displayed in 
 Press H and [ENTER] for help with colors.
 Press Q and [ENTER] to quit.
 > ");
-            string input = GC.ReadLine().ToUpper();
+            string input = GC.ReadLine().ToUpper().Replace(" ","");
             if (m_Colors.ContainsKey(input))
             {
                 input = m_Colors[input].ToString();

@@ -15,9 +15,17 @@ namespace TilesGameCSharp
             Console.BackgroundColor = background;
         }
 
-        public static void Write(string text)
+        public static void Write(string text, bool frame = false)
         {
+            if (frame)
+            {
+                Console.Write($"╔{"".PadLeft(text.Length, '═')}╗\n║");
+            }
             Console.Write(text);
+            if (frame)
+            {
+                Console.Write($"║\n╚{"".PadLeft(text.Length, '═')}╝");
+            }
         }
 
         public static void Clear()
