@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using G = TilesGameCSharp.GlobalConstants;
 using GC = TilesGameCSharp.GameConsole;
 
@@ -46,17 +47,13 @@ namespace TilesGameCSharp
                 if (GameFinished())
                 {
                     m_Levels[level].Paint();
-                    GC.SetColors(System.ConsoleColor.Green, System.ConsoleColor.Black);
-                    GC.Write($"\nCongrats!\nYou finished the game in {totalNumberOfMoves + numberOfMoves} moves!");
-                    GC.ResetColors();
+                    GC.Write($"\nCongrats!\nYou finished the game in {totalNumberOfMoves + numberOfMoves} moves!", false, ConsoleColor.Green);
                     return;
                 }
                 if (m_Levels[level].Finished())
                 {
                     m_Levels[level].Paint();
-                    GC.SetColors(System.ConsoleColor.Green, System.ConsoleColor.Black);
-                    GC.Write($"\nHurray!\nYou finished the level {m_Levels[level].Number} in {numberOfMoves} moves!\n");
-                    GC.ResetColors();
+                    GC.Write($"\nHurray!\nYou finished the level {m_Levels[level].Number} in {numberOfMoves} moves!\n", false, ConsoleColor.Green);
                     level += 1;
                     totalNumberOfMoves += numberOfMoves;
                     numberOfMoves = 0;
@@ -68,17 +65,14 @@ namespace TilesGameCSharp
 
         private void ShowIntro(int invalidInput = 0)
         {
-            GC.ResetColors();
             GC.Clear();
             GC.Write(" Color tiles game ", true);
             GC.Write("\n\n");
             if (invalidInput == G.INVALID_INPUT)
             {
-                GC.SetColors(System.ConsoleColor.Red, System.ConsoleColor.Black);
                 GC.Write(@"Sorry I did not understand you last input!
 Please type a valid color name or number, see below for details.
-");
-                GC.ResetColors();
+", false, ConsoleColor.Red);
             }
             else
             {
@@ -88,9 +82,7 @@ Please type a valid color name or number, see below for details.
             foreach (KeyValuePair<string, int> color in m_Colors)
             {
                 GC.Write($"\n{color.Value,2}. {color.Key,-12}");
-                GC.SetColors(System.ConsoleColor.Black, (System.ConsoleColor)color.Value);
-                GC.Write($"{color.Key,-12}");
-                GC.ResetColors();
+                GC.Write($"{color.Key,-12}", false, ConsoleColor.Black, (ConsoleColor)color.Value);
             }
             GC.Write("\n\nWhen ready press any key when ready to play!\n");
             GC.ReadKey();
@@ -143,7 +135,7 @@ Press Q and [ENTER] to quit.
             Dictionary<string, int> colors = new Dictionary<string, int>(G.MAX_COLORS);
             for (int c = 1; c <= G.MAX_COLORS; c++)
             {
-                colors.Add(System.Enum.GetName(typeof(System.ConsoleColor), c).ToUpper(), c);
+                colors.Add(Enum.GetName(typeof(ConsoleColor), c).ToUpper(), c);
             }
             return colors;
         }
