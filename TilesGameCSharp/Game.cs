@@ -28,10 +28,12 @@ namespace TilesGameCSharp
         {
             ShowIntro();
             int input, numberOfMoves = 0, totalNumberOfMoves = 0, level = 0;
+            bool match = false;
+            string inputStr = string.Empty;
             while (true)
             {
-                m_Levels[level].Paint();
-                input = GetUserInput();
+                m_Levels[level].Paint(inputStr, match);
+                input = GetUserInput(out inputStr);
                 if (input == G.USER_GAVE_UP)
                 {
                     GC.Write($"\nYou gave up after {totalNumberOfMoves + numberOfMoves} moves - game ended!");
@@ -39,38 +41,40 @@ namespace TilesGameCSharp
                 }
                 if (input == G.USER_WANTS_HELP || input == G.INVALID_INPUT)
                 {
-                    ShowIntro(input);
+                    ShowIntro(input, inputStr);
                     continue;
                 }
                 numberOfMoves += 1;
-                m_Levels[level].SelectColor(input);
+                match = m_Levels[level].SelectColor(input);
                 if (GameFinished())
                 {
-                    m_Levels[level].Paint();
-                    GC.Write($"\nCongrats!\nYou finished the game in {totalNumberOfMoves + numberOfMoves} moves!", false, ConsoleColor.Green);
+                    m_Levels[level].Paint(inputStr, match);
+                    GC.Write($"\n\nCongrats!\nYou finished the game in {totalNumberOfMoves + numberOfMoves} moves!", false, ConsoleColor.Green);
                     return;
                 }
                 if (m_Levels[level].Finished())
                 {
-                    m_Levels[level].Paint();
-                    GC.Write($"\nHurray!\nYou finished the level {m_Levels[level].Number} in {numberOfMoves} moves!\n", false, ConsoleColor.Green);
+                    m_Levels[level].Paint(inputStr, match);
+                    GC.Write($"\n\nHurray!\nYou finished the level {m_Levels[level].Number} in {numberOfMoves} moves!\n", false, ConsoleColor.Green);
                     level += 1;
                     totalNumberOfMoves += numberOfMoves;
                     numberOfMoves = 0;
+                    inputStr = string.Empty;
+                    match = false;
                     GC.Write("\nPress any key to advance to the next level!");
                     GC.ReadKey();
                 }
             }
         }
 
-        private void ShowIntro(int invalidInput = 0)
+        private void ShowIntro(int invalidInput = 0, string inputStr = "")
         {
             GC.Clear();
             GC.Write(" Color tiles game ", true);
             GC.Write("\n\n");
             if (invalidInput == G.INVALID_INPUT)
             {
-                GC.Write(@"Sorry I did not understand you last input!
+                GC.Write(@$"Sorry I did not understand '{inputStr}'!
 Please type a valid color name or number, see below for details.
 ", false, ConsoleColor.Red);
             }
@@ -102,14 +106,16 @@ Please type a valid color name or number, see below for details.
             return true;
         }
 
-        private int GetUserInput()
+        private int GetUserInput(out string inputStr)
         {
             GC.Write(@$"
+
 Please enter color number (1-{G.MAX_COLORS}) or color name that is displayed in level above then press [ENTER]
 Press H and [ENTER] for help with colors.
 Press Q and [ENTER] to quit.
 > ");
-            string input = GC.ReadLine().ToUpper().Replace(" ","");
+            inputStr = GC.ReadLine().ToUpper().Replace(" ","");
+            string input = inputStr;
             if (m_Colors.ContainsKey(input))
             {
                 input = m_Colors[input].ToString();

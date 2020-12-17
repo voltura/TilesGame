@@ -54,8 +54,9 @@ namespace TilesGameCSharp
             return true;
         }
 
-        public void SelectColor(int color)
+        public bool SelectColor(int color)
         {
+            bool match = false;
             for (int y = 0; y < Map.GetUpperBound(0); y++)
             {
                 for (int x = 0; x < Map.GetUpperBound(1); x++)
@@ -63,17 +64,23 @@ namespace TilesGameCSharp
                     if (Map[y, x].Color == (ConsoleColor)color)
                     {
                         Map[y, x].Selected = true;
+                        match = true;
                     }
                 }
             }
+            return match;
         }
 
-        public void Paint()
+        public void Paint(string input, bool match)
         {
             GC.Clear();
             GC.Write($" Level {Number:00} ", true);
-            GC.Write($"\n\n┌{"".PadLeft(Map.GetUpperBound(1)*2 + 2, '─')}┐\n");
-
+            GC.Write($"\n\n");
+            if (input != string.Empty)
+            {
+                GC.Write($"You entered {input} which was {(match ? "" : "not ")}found!", false, match ? ConsoleColor.White : ConsoleColor.Red);
+            }
+            GC.Write($"\n\n┌{"".PadLeft(Map.GetUpperBound(1) * 2 + 2, '─')}┐\n");
             for (int y = 0; y < Map.GetUpperBound(0); y++)
             {
                 GC.Write("│ ");
