@@ -21,6 +21,13 @@ namespace TilesGameCSharp
 
         public static void Clear()
         {
+            Console.Title = "Color Tiles Game";
+            Console.WindowWidth = 60;
+            Console.BufferWidth = 60;
+            Console.BufferHeight = 30;
+            Console.WindowHeight = 30;
+            Console.WindowLeft = 0;
+            Console.WindowTop = 0;
             Console.Clear();
         }
 

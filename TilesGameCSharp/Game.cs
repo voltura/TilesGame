@@ -75,13 +75,12 @@ namespace TilesGameCSharp
             if (invalidInput == G.INVALID_INPUT)
             {
                 GC.Write(@$"Sorry I did not understand '{inputStr}'!
-Please type a valid color name or number, see below for details.
+Please type a valid color name or number.
 ", false, ConsoleColor.Red);
             }
             else
             {
-                GC.Write(@"Remember the name or number for each color!
-");
+                GC.Write("Remember the name or number for each color!\n");
             }
             foreach (KeyValuePair<string, int> color in m_Colors)
             {
@@ -110,7 +109,7 @@ Please type a valid color name or number, see below for details.
         {
             GC.Write(@$"
 
-Please enter color number (1-{G.MAX_COLORS}) or color name that is displayed in level above then press [ENTER]
+Please enter color 1-{G.MAX_COLORS} or color name displayed and [ENTER]
 Press H and [ENTER] for help with colors.
 Press Q and [ENTER] to quit.
 > ");
