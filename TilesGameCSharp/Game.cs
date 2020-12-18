@@ -32,7 +32,7 @@ namespace TilesGameCSharp
             string inputStr = string.Empty;
             while (true)
             {
-                m_Levels[level].Paint(inputStr, match);
+                m_Levels[level].Paint(inputStr, match, m_Colors);
                 input = GetUserInput(out inputStr);
                 if (input == G.USER_GAVE_UP)
                 {
@@ -48,13 +48,13 @@ namespace TilesGameCSharp
                 match = m_Levels[level].SelectColor(input);
                 if (GameFinished())
                 {
-                    m_Levels[level].Paint(inputStr, match);
+                    m_Levels[level].Paint(inputStr, match, m_Colors);
                     GC.Write($"\n\nCongrats!\nYou finished the game in {totalNumberOfMoves + numberOfMoves} moves!", false, ConsoleColor.Green);
                     return;
                 }
                 if (m_Levels[level].Finished())
                 {
-                    m_Levels[level].Paint(inputStr, match);
+                    m_Levels[level].Paint(inputStr, match, m_Colors);
                     GC.Write($"\n\nHurray!\nYou finished the level {m_Levels[level].Number} in {numberOfMoves} moves!\n", false, ConsoleColor.Green);
                     level += 1;
                     totalNumberOfMoves += numberOfMoves;

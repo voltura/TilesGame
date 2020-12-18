@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using GC = TilesGameCSharp.GameConsole;
 
 namespace TilesGameCSharp
@@ -71,14 +72,33 @@ namespace TilesGameCSharp
             return match;
         }
 
-        public void Paint(string input, bool match)
+        public void Paint(string input, bool match, Dictionary<string, int> gameColors)
         {
             GC.Clear();
             GC.Write($" Level {Number:00} ", true);
             GC.Write($"\n\n");
             if (input != string.Empty)
             {
-                GC.Write($"You entered {input} which was {(match ? "" : "not ")}found!", false, match ? ConsoleColor.White : ConsoleColor.Red);
+                GC.Write($"You entered ", false, match ? ConsoleColor.White : ConsoleColor.Red);
+                if (gameColors.ContainsKey(input))
+                {
+                    GC.Write($"{input} ", false, (ConsoleColor)gameColors.GetValueOrDefault(input));
+                }
+                else
+                {
+                    GC.Write($"{input} ", false, match ? ConsoleColor.White : ConsoleColor.Red);
+                }
+                if (int.TryParse(input, out int inputInt))
+                {
+                    ConsoleColor? color = (ConsoleColor)inputInt;
+                    if (color != null)
+                    {
+                        string colorName = $"({Enum.GetName(typeof(ConsoleColor), color).ToUpper()}) ";
+                        GC.Write($"{colorName}", false, (ConsoleColor)color);
+                    }
+                } 
+                
+                GC.Write($"which was {(match ? "" : "not ")}found!", false, match ? ConsoleColor.White : ConsoleColor.Red);
             }
             GC.Write($"\n\n┌{"".PadLeft(Map.GetUpperBound(1) * 2 + 2, '─')}┐\n");
             for (int y = 0; y < Map.GetUpperBound(0); y++)
