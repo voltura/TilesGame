@@ -6,4 +6,10 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="TilesGameCSharp\**" />
+    <EmbeddedResource Remove="TilesGameCSharp\**" />
+    <None Remove="TilesGameCSharp\**" />
+  </ItemGroup>
+
 </Project>

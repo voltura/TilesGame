@@ -113,7 +113,7 @@ Please enter color 1-{G.MAX_COLORS} or color name displayed and [ENTER]
 Press H and [ENTER] for help with colors.
 Press Q and [ENTER] to quit.
 > ");
-            inputStr = GC.ReadLine().ToUpper().Replace(" ","");
+            inputStr = GC.ReadLine().ToUpper().Replace(" ", "");
             string input = inputStr;
             if (m_Colors.ContainsKey(input))
             {

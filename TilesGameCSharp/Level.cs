@@ -96,8 +96,8 @@ namespace TilesGameCSharp
                         string colorName = $"({Enum.GetName(typeof(ConsoleColor), color).ToUpper()}) ";
                         GC.Write($"{colorName}", false, (ConsoleColor)color);
                     }
-                } 
-                
+                }
+
                 GC.Write($"which was {(match ? "" : "not ")}found!", false, match ? ConsoleColor.White : ConsoleColor.Red);
             }
             GC.Write($"\n\n┌{"".PadLeft(Map.GetUpperBound(1) * 2 + 2, '─')}┐\n");
@@ -110,7 +110,7 @@ namespace TilesGameCSharp
                 }
                 GC.Write(" │\r\n");
             }
-            GC.Write($"└{"".PadLeft(Map.GetUpperBound(1)*2 + 2, '─')}┘");
+            GC.Write($"└{"".PadLeft(Map.GetUpperBound(1) * 2 + 2, '─')}┘");
         }
     }
 }

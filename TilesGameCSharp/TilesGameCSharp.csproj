@@ -2,7 +2,13 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
+    <StartupObject>TilesGameCSharp.Program</StartupObject>
+    <Authors>Joakim Skoglund</Authors>
+    <Company>Voltura AB</Company>
+    <Product>Color Tiles Game</Product>
+    <Description>A learning game for kids - learn colors and spelling of the same</Description>
+    <AssemblyName>ColorTilesGame</AssemblyName>
   </PropertyGroup>
 
 </Project>
